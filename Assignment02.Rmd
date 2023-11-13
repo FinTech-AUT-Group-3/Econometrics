@@ -1,0 +1,69 @@
+---
+title: |
+  | Financial Econometrics in R/Python
+  | Group Assignment 2
+author: |
+  | Group 3
+  | The Business School, Imperial College London
+  | Rakesh Bali (CID: 02478023)
+  | Rui Moreno (CID: 02532521)
+  | Siyu Liu (CID: 02479121)
+  | Zhiyu Chen (CID: 02517659)
+  | Zhuofan Chen (CID: 02151338)
+date: "06-11-2023"
+output: pdf_document
+---
+
+```{=tex}
+\newpage
+\tableofcontents
+```
+\newpage
+
+## Preparation of R and Data
+### Loading R packages
+
+Load the packages required.
+
+```{r loadLibs, message=FALSE, warning=FALSE}
+library(quantmod)
+library(dplyr)
+library(readxl)
+library(moments)
+library(lmtest)
+library(sandwich) 
+library(MASS)
+library(ggplot2)
+library(knitr)
+```
+
+### Loading Data
+
+Load `growthdata.xlsx` into a data frame.
+
+```{r message=FALSE, warning=FALSE}
+
+
+
+```
+
+\newpage
+
+## Question 1
+
+
+```{r}
+
+```
+
+\newpage
+
+## Question 2
+
+
+```{r}
+
+```
+
+
+--END--
