@@ -35,6 +35,7 @@ library(sandwich)
 library(MASS)
 library(ggplot2)
 library(knitr)
+library(margins)
 ```
 
 ### Loading Data
@@ -42,9 +43,9 @@ library(knitr)
 Load `growthdata.xlsx` into a data frame.
 
 ```{r message=FALSE, warning=FALSE}
-
-
-
+employment_data <- read_excel("employment_08_09.xlsx")
+# clean data
+data <- na.omit(employment_data)
 ```
 
 \newpage
@@ -65,5 +66,23 @@ Load `growthdata.xlsx` into a data frame.
 
 ```
 
+```{r Ada}
+#%% Question b, c, d
+#%% linear probability model
+lpm_b <- lm(employed ~ age + I(`age`^2), data = data)
+summary(lpm_b)
+# probit regression
+probit_c <- glm(employed ~ age + I(`age`^2), family = binomial(link = "probit"), data)
+summary(probit_c)
+# logit regression
+logit_d <- glm(employed ~ age + I(`age`^2), family = binomial(link = "logit"), data)
+summary(logit_d)
+
+#% questions i
+# t test - statistical significance of coefficients
+coeftest(lpm_b, vcov = vcovHC(lpm_b), type = "HC1")
+coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
+coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
+```
 
 --END--
