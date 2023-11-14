@@ -83,6 +83,33 @@ summary(logit_d)
 coeftest(lpm_b, vcov = vcovHC(lpm_b), type = "HC1")
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
+# marginal effects for c and d
+summary(margins(lpm_b))
+summary(margins(probit_c))
+summary(margins(logit_d))
+
+#% question ii
+#% non-linearity evidence
+
+# create categorical factor
+# lpm_extended with factor
+# lpm_interaction with factor * age
+# polynomial regression = factor * age + age^2 + age^2 * factor
+
+#% question iii
+
+# predicted probability of b polynomial
+data$employed_pred <- predict(polynomial_b, data)
+# add plot
+
+# predictions for sets of values of three models above
+new_data <- data.frame(age = c(20,40,60),
+                       age_sqr = c(400, 1600, 3600))  
+lpm_prediction <- predict(lpm_b, new_data, type = "response")
+probit_prediction <- predict(probit_c, new_data, type = "response")
+logit_prediction <- predict(logit_d, new_data, type = "response")
+print(list(lpm_prediction = lpm_prediction, logit_prediction = logit_prediction, probit_prediction = probit_prediction))
+
 ```
 
 --END--
