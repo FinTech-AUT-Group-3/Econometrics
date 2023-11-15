@@ -50,12 +50,30 @@ data <- na.omit(employment_data)
 
 \newpage
 
-## Question 1
+## Question a
 
 
 ```{r}
 
+workers_employed <- employment_data %>% filter(employed == 1)
+
+number_w_employed <- length(workers_employed$employed)
+
+fraction_employed <- number_w_employed / length(employment_data$employed)
+
+se_proportion <- sqrt((fraction_employed * (1 - fraction_employed)) / length(employment_data$employed))
+
+confidence_level <- 0.95
+
+margin_of_error <- qnorm((1 + confidence_level) / 2) * se_proportion
+
+confidence_interval <- c(fraction_employed - margin_of_error, fraction_employed + margin_of_error)
+
+print(fraction_employed)
+print(confidence_interval)
 ```
+
+In April 2009, 87.55% of workers were employed. Computing a 95% confidence interval for the probability that a worker was employed in April 2009 we have that the interval is [0.867, 0.884].
 
 \newpage
 
@@ -111,5 +129,38 @@ logit_prediction <- predict(logit_d, new_data, type = "response")
 print(list(lpm_prediction = lpm_prediction, logit_prediction = logit_prediction, probit_prediction = probit_prediction))
 
 ```
+
+\newpage
+
+## Question f
+
+```{r}
+lpm_f <- lm(employed ~ age + I(age^2) + educ_lths + educ_hs + educ_somecol + educ_aa + educ_bac +
+                       educ_adv + female + married + race + ne_states + so_states + ce_states + we_states                        + earnwke, data = data)
+summary(lpm_b)
+summary(lpm_f)
+```
+
+# i)
+
+The comparison between the initial linear regression model and the adjusted model reveals a small difference in the coefficients for age and age^2. In the initial model, age and age^2 exhibited significant negative and positive effects, respectively, on employment status. In the adjusted model, while the coefficients for age and age^2 remain significant, their values have slightly changed. This difference suggests that the additional variables have impacted the interpretation of the age-related effects on employment. Namely, the introduction of new variables like educ_lths - the highest level of education is less than a high school graduate-, region, and weekly earnings points to potential omitted variable bias in the initial model.
+
+Additionally, the statistical significance of certain new variables, such as education, weekly earnings, and region, in the adjusted model highlights the importance of considering a broader set of factors. Moreover, the higher R-squared of the adjusted model indicates an increase in explanatory power which in turn suggests the added covariates contribute to a better understanding of the variability in employment status. 
+
+To conclude, while these results might suggest the presence of some omitted variable bias in the initial model, the small coefficient difference for age and age^2 between the two models and the fact they are still extremely significant in the adjusted model leads us to think there is not an impactful omitted variable bias. Nevertheless, it is important to point out that the adjusted model better explains the changes due to the added covariates
+
+# ii)
+
+The regression results provide insights into the characteristics of workers particularly affected by the 2008 financial crisis. 
+
+Firstly, the negative coefficient for the variable representing workers with less than a high school education - educ_lths - suggests that individuals with lower educational attainment faced a more significative negative impact on their employment status, i.e. were more likely to be unemployed in 2009. This fact aligns with the usual economic literature which defends a higher vulnerability of less-educated workers during economic downturns. 
+
+Additionally, the positive coefficient for the variable indicating workers from central states - ce_states - implies that individuals residing in central regions of the country experienced a more significant negative effect on their employment compared to those in other regions. One possible explanation for the geographical disparity in the impact of the financial crisis could be attributed to variations in industry composition across different regions. This aligns with the fact that central states are deeply connected with the automotive industry (e.g. Michigan) and with manufacturing and exports, both of which were severely affected by the Great Recession. 
+ 
+Moreover, the positive and statistically significant coefficient for weekly earnings - earnwke - indicates that workers with higher pre-crisis earnings experienced a relatively less severe negative impact on their employment status. This underscores the financial resilience of individuals with higher earnings, suggesting that economic downturns disproportionately affected those with lower income levels. One possible explanation is the tendency of large corporate companies to  heavily downsize their workforce during a financial crisis to reduce costs but not its higher levels - or at least not to the same extent. Subsequently, this leads to the correlation between lesser weekly earnings - workforce - and a higher probability of being let go during a financial crisis. Another possible explanation comes from the fact higher weekly earners are usually more qualified. For example, if we considered someone who became unemployed after the data was collected, the more qualified they were the higher the chance they could find another position before April 2009. In turn, this would again substantiate the positive coefficient for weekly earnings.
+
+Finally, the positive coefficient for age suggests that, on average, older workers experienced more favourable outcomes regarding employment in the aftermath of the crisis. This finding is consistent with the idea that older workers possess valuable experience, skills, and industry knowledge, making them more valuable to a company and, consequently, more resilient to economic downturns. However, the negative coefficient for age^2 indicates a diminishing positive effect with age increase and a decline in this effect for the oldest workers. This diminishing effect could be due to factors such as age-related discrimination, and changing labour market dynamics such as technological changes or retirement, all of which would be exacerbated during a financial crisis and associated cost-cutting policies.
+
+Overall, the analysis suggests that the 2008 financial crisis disproportionately affected younger workers, those with lower educational attainment and lesser weekly earnings, and those residing in specific geographical regions.
 
 --END--
