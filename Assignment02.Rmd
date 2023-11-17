@@ -10,7 +10,7 @@ author: |
   | Siyu Liu (CID: 02479121)
   | Zhiyu Chen (CID: 02517659)
   | Zhuofan Chen (CID: 02151338)
-date: "06-11-2023"
+date: "18-11-2023"
 output: pdf_document
 ---
 
@@ -24,7 +24,6 @@ output: pdf_document
 ### Loading R packages
 
 Load the packages required.
-
 ```{r loadLibs, message=FALSE, warning=FALSE}
 library(quantmod)
 library(dplyr)
@@ -41,18 +40,14 @@ library(margins)
 ### Loading Data
 
 Load `growthdata.xlsx` into a data frame.
-
-```{r message=FALSE, warning=FALSE}
+```{r load data, message=FALSE, warning=FALSE}
 employment_data <- read_excel("employment_08_09.xlsx")
 # clean data
 data <- na.omit(employment_data)
 ```
-
 \newpage
 
 ## Question a
-
-
 ```{r}
 
 workers_employed <- employment_data %>% filter(employed == 1)
@@ -77,18 +72,63 @@ In April 2009, 87.55% of workers were employed. Computing a 95% confidence inter
 
 \newpage
 
-## Question 2
-
-
-```{r}
-
+## Question b
+### Question b-i)
+```{r question b linear probability regression on age and squared age}
+# required linear probability model
+lpm_b <- lm(employed ~ age + I(`age`^2), data = data)
+summary(lpm_b)
 ```
+The *age* variable is a statistically significant determinant of 2009 April Employment rate. The linear probability model with *age* and squared *age* regressed on *employed* gives a relationship of 
+$$ employed = 0.3218 + 0.02746 \times age - 0.0003159 \times age^2$$.
+On average, a one-unit increase in *age* is associated with an increase of 0.02746 in the probability of employment. The t-value of the *age* variable at 9.491 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coeffient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*.
+
+### Question b-ii)
+The above linear probability model indicates a downward curvature in the relationship between *squared age* and employment rate in April 2009. Any one unit of age rise is expected to decrease the probability of being employed by $$3.159 \times 10^{-4}$$ unit. A p-value of less than $$2 \times 10^{-16}$$ of the *squared age* variable suggests there is strong evidence against the null hypothesis that the true coefficient of *squared age* is zero. With a statistically significant t-value of -9.08, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
+
+In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a linear probability model with *age* as the only regressor is run below. Its Multiple R-squared statistics os 0.002618 is much smaller than the one of the main regression above at 0.01956, implying an explanatory gap on the *employed* variable between the two models. By taking away the *squred age* regressor, around 1.7% of the variability in *employed* is left unexplained. With a much higher F-statistics at 47.59, the regression in question b-i carries better overall fitting goodness of the dependent variable *employed* and *squared age* thereon should be included in a linear regression to model it. The importance of the squared term proves against the linearity of *age*.
+```{r}
+# regression to detect the linearity of the variable 'age' only 
+lpm_b_1 <- lm(employed ~ age, data = data)
+summary(lpm_b_1)
+```
+
+### Question b-iii)
+```{r}
+# predictions for sets of values of three models above
+new_data <- data.frame(age = c(20,40,60),
+                       age_sqr = c(400, 1600, 3600))  
+lpm_prediction <- predict(lpm_b, new_data, type = "response")
+print(list(lpm_prediction = lpm_prediction))
+```
+Based on the linear probability model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 74.47%, 91.48% and 83.22% respectively under the assumption of a linear relationship of both the linear and the quadratic forms of *age* on *employed*. The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. As age grows and people step into employment finishing higher-level education, the prediction of *employed* probability level peaks at 40 years. It drops by over 8%, but still higher than the 20-year-old prediction, at a predicted *age* level of 60 as people starts to retire or to quit job while more are expected to continue working to an older age.
+
+\newpage
+
+## Question c
+### Question c-i)
+
+### Question c-ii)
+
+### Question c-iii)
+
+\newpage
+
+## Question d
+### Question d-i)
+
+### Question d-ii)
+
+### Question d-iii)
+
+\newpage
+
+## Question e
+
 
 ```{r Ada}
 #%% Question b, c, d
-#%% linear probability model
-lpm_b <- lm(employed ~ age + I(`age`^2), data = data)
-summary(lpm_b)
+
 # probit regression
 probit_c <- glm(employed ~ age + I(`age`^2), family = binomial(link = "probit"), data)
 summary(probit_c)
@@ -98,21 +138,12 @@ summary(logit_d)
 
 #% questions i
 # t test - statistical significance of coefficients
-coeftest(lpm_b, vcov = vcovHC(lpm_b), type = "HC1")
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
 # marginal effects for c and d
 summary(margins(lpm_b))
 summary(margins(probit_c))
 summary(margins(logit_d))
-
-#% question ii
-#% non-linearity evidence
-
-# create categorical factor
-# lpm_extended with factor
-# lpm_interaction with factor * age
-# polynomial regression = factor * age + age^2 + age^2 * factor
 
 #% question iii
 
@@ -123,7 +154,6 @@ data$employed_pred <- predict(polynomial_b, data)
 # predictions for sets of values of three models above
 new_data <- data.frame(age = c(20,40,60),
                        age_sqr = c(400, 1600, 3600))  
-lpm_prediction <- predict(lpm_b, new_data, type = "response")
 probit_prediction <- predict(probit_c, new_data, type = "response")
 logit_prediction <- predict(logit_d, new_data, type = "response")
 print(list(lpm_prediction = lpm_prediction, logit_prediction = logit_prediction, probit_prediction = probit_prediction))
@@ -141,7 +171,7 @@ summary(lpm_b)
 summary(lpm_f)
 ```
 
-# i)
+### Question f-i)
 
 The comparison between the initial linear regression model and the adjusted model reveals a small difference in the coefficients for age and age^2. In the initial model, age and age^2 exhibited significant negative and positive effects, respectively, on employment status. In the adjusted model, while the coefficients for age and age^2 remain significant, their values have slightly changed. This difference suggests that the additional variables have impacted the interpretation of the age-related effects on employment. Namely, the introduction of new variables like educ_lths - the highest level of education is less than a high school graduate-, region, and weekly earnings points to potential omitted variable bias in the initial model.
 
@@ -149,7 +179,7 @@ Additionally, the statistical significance of certain new variables, such as edu
 
 To conclude, while these results might suggest the presence of some omitted variable bias in the initial model, the small coefficient difference for age and age^2 between the two models and the fact they are still extremely significant in the adjusted model leads us to think there is not an impactful omitted variable bias. Nevertheless, it is important to point out that the adjusted model better explains the changes due to the added covariates
 
-# ii)
+### Question f-ii)
 
 The regression results provide insights into the characteristics of workers particularly affected by the 2008 financial crisis. 
 
