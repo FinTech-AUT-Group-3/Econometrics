@@ -125,7 +125,7 @@ In order to further prove the non-linearity, i.e. to prove the significance of t
 lpm_b_1 <- lm(employed ~ age, data = data)
 waldtest(lpm_b, lpm_b_1)
 ```
-Taking the main regression *lpm_b* as the fitted objective, a waldtest has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that coefficients of these two models are the same can be rejected at significance level of 1% with a F-statistics of 82.439. Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference to the regression. The importance of the squared term proves against the linearity of *age*.
+Taking the main regression *lpm_b* as the fitted objective, a Wald test has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that coefficients of these two models are the same can be rejected at significance level of 1% with a F-statistics of 82.439. Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference to the regression. The importance of the squared term proves against the linearity of *age*.
 
 ### Question b-iii)
 
@@ -251,8 +251,9 @@ summary(logit_d)
 # t test - statistical significance of coefficients
 coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
 ```
+The logistic regression is a statistical method used for modeling the probability of a dependent variable is categorical with two levels at 0 and 1, in this case the *employed* binary variable. The sigmoid function is used to model the relationship of *age* and *squared age* against the employment probability.
 
-Based on the above result the *age* variable is a statistically significant determinant of 2009 April Employment rate at less than one percent significance (p value less than 0.01).
+Based on the above result, the *age* variable is a statistically significant determinant of April 2009 Employment probability rate with over 99% confidence level as the model p-value is less than 0.01. One-unit change in *age* shall lead to 0.2187 units of change in the log-odds of the corresponding dependent variable *employed*.
 
 ```{r}
 margins(logit_d)
@@ -264,14 +265,14 @@ The z-value of the *age* variable at 8.7968 is significant enough to reject the 
 
 *Is there evidence of a nonlinear effect of age on probability of being employed?*
 
-The above logit model indicates a downward curvature in the relationship between *squared age* and employment rate in April 2009. With a statistically significant t-value of -8.3235, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
+The logit model *logid_d* above reveals a distinctive concave shape in the relationship between *squared age* and *employed* in April 2009. The statistical significance of the t-value at -8.3235 associated with the quadratic term validates its substantial impact on the model, indicating a pronounced non-linear effect of *age* on the likelihood of being employed.
 
-In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a probit model with *age* as the only regressor is run below. And then waldest is performed on both the models i.e. one model with *squared age* and the other without. The result of the waldtest confirms that both the models are different at less than 1% significance. Hence, it is confirmed that the *squared age* is significant and it is explaining the nonlinear effect of age on probability of being employed.
+To further establish the significance of the non-linear relationship, a logit model *logit_d_1* with *age* as the only regressor is created below. Subsequently, a Wald test is conducted on both models: one incorporating the *squared age* term and the other without. The results of the Wald test provide compelling evidence that the two models differ significantly at a significance level of less than 1%. This again confirms the importance of the *squared age* term, substantiating its role in explaining the non-linear impact of *age* on the probability of being employed.
 
 ```{r}
 # regression to detect the linearity of the variable 'age' only
-logit_d_1 <-
-  glm(employed ~ age, family = binomial(link = "logit"), data)
+logit_d_1 <- glm(employed ~ age, 
+                 family = binomial(link = "logit"), data)
 waldtest(logit_d, logit_d_1)
 ```
 
@@ -288,7 +289,7 @@ names(logit_prediction) <- c("Age 20", "Age 40", "Age 60")
 print(list(logit_prediction = logit_prediction))
 ```
 
-Based on the logit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 72.85%, 91.05% and 83.58% respectively. The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. As age grows and people step into employment finishing higher-level education, the prediction of *employed* probability level increases till some age and then it starts decreasing as people starts to retire or to quit job. This can be observed in employment probability of 60 being less than employment probability of 40.
+Based on the *logit_d* model, a new data set is created given the specified values of the predictors *age* and *squared age*. With another similar tendency, the logit prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 72.86%, 91.06% and 83.58% respectively. The observed dip in the predicted employment probability at the age of 20 can be attributed to the likelihood that individuals in this age group are often engaged in education. As people age and transition into the workforce after completing higher education, the predicted probability of being employed rises up until a certain age. This probability then starts to decline, reflecting the phase where individuals may retire or voluntarily exit the workforce. This trend is evident in the comparison between the employment probabilities at the ages of 60 and 40, with the probability at 60 being lower than that at 40.
 
 ```{r}
 a = logit_d$coefficients[3]
@@ -302,6 +303,8 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 
 print(paste("The age with the highest probability of being employed in 2009 is", round(- b / (2 * a), 1)))
 ```
+
+Again the sample *age* sequence from 15 to 75 was created to plot the employment probability curve with a similar depicted curve tendency and a similar *age* peak at 43.2 years old. Beyond this peak point, the rising employment probability starts to decline, illustrating a characteristic quadratic relationship. The value of *employed* diminishes at both tails to underscore the non-linear nature of the logistic regression model.
 
 \newpage
 
