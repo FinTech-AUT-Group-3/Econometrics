@@ -178,21 +178,21 @@ summary(probit_c)
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 ```
 
-Based on the above result the *age* variable is a statistically significant determinant of 2009 April Employment rate at less than one percent significance (p value less than 0.01).
+The p-value of the coefficient of age is < 2.2e-16, which is close to zero. As it is less than our significance level (even regarding a significance level of 0.01%), we could reject the null hypothesis. Thus, based on our probit regression, we can conclude that age is a statistically significant determinant of employment in April 2009.
 
 ```{r}
 margins(probit_c)
 ```
 
-The z-value of the *age* variable at 8.555 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*.
+The z-value of the *age* variable at 8.555 is a further evidence to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. 
 
 ### Question c-ii)
 
 *Is there evidence of a nonlinear effect of age on probability of being employed?*
 
-The above probit model indicates a downward curvature in the relationship between *squared age* and employment rate in April 2009. With a statistically significant t-value of -8.117, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
+The p-value of the coefficient of age^2 is 4.748e-16, which is nearly zero as well. As it is less than our significance level, we could reject the null hypothesis. Thus, based on our probit regression, we could say age^2 is also a statistically significant determinant of employment in April 2009. The quadratic term is proved to be contributing to the model and therefore a non-linearity of *age* on the probability of being employed is detected.
 
-In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a probit model with *age* as the only regressor is run below. And then waldest is performed on both the models i.e. one model with *squared age* and the other without. The result of the waldtest confirms that both the models are different at less than 1% significance. Hence, it is confirmed that the *squared age* is significant and it is explaining the nonlinear effect of age on probability of being employed.
+In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a probit model with *age* as the only regressor is run below. And then waldest is performed on both the models i.e. one model with *squared age* and the other without. The result of the waldtest confirms that both the models are different at less than 1% significance. Hence, it is confirmed that the *squared age* is significant and it is explaining the nonlinear effect of age on probability of being employed. 
 
 ```{r}
 # regression to detect the linearity of the variable 'age' only
@@ -200,6 +200,8 @@ probit_c_1 <- glm(employed ~ age,
                   family = binomial(link = "probit"), data)
 waldtest(probit_c, probit_c_1)
 ```
+By looking at the waldtest between the LPM model and Probit model, we observe a p-value of < 2.2e-16, which is nearly zero. As p-value is less than the significance level(even considering a 0.01% here), we could reject the null hypothesis which states that the two models are the same. Therefore, our probit model is different from the LPM model, and the non-linearity of *age* on the probability of being employed is reinforced.
+
 
 ### Question c-iii)
 
@@ -214,7 +216,6 @@ names(probit_prediction) <- c("Age 20", "Age 40", "Age 60")
 print(list(probit_prediction = probit_prediction))
 ```
 
-Based on the probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. As age grows and people step into employment finishing higher-level education, the prediction of *employed* probability level increases till some age and then it starts decreasing as people starts to retire or to quit job. This can be observed in employment probability of 60 being less than employment probability of 40.
 
 ```{r}
 a = probit_c$coefficients[3]
@@ -229,6 +230,9 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 print(paste("The age with the highest probability of being employed in 2009 is",
             round(- b / (2 * a), 1)))
 ```
+Based on the probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. This means, for example, a 20-year-old worker is predicted to be employed in April 2009 with a probability of 0.7327351, based on the historical data we have. 
+
+The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. And the old people may face some physical restrictions while working, which may also have a significant impact on their chance of getting employed. While the middle-age people are the main workforce in society with their better physical and experiential conditions. Such trend can also be shown in our plot of probability of being employed under probit module.
 
 \newpage
 
@@ -322,6 +326,17 @@ model_names <- c("LPM", "Probit", "Logit")
 model_df <- cbind(Model = model_names, model_df)
 model_df
 ```
+We can observe that the probability of being employed is 0.089%, 0.11%, and 0.12% in LPM,  Probit, Logit model, respectively. Thus, there are not much difference from our answers to question (b) to (d).
+However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. That is, bj gives the
+average change in Y associated with a one-unit increase in Xj.
+However, there is a limitation of LPM - the predicted probabilities can fall outside the [0, 1] range, and it may suffer from heteroscedasticity.
+
+Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
+
+In the logit model, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing Xs by one unit changes the log odds by bj units. Equivalently, the odds change in % by exp(bj).
+Both Probit and Logic models will have the predicted probabilities lying in the range of [0,1]. 
+
+Thus, the three models are different from each other by definition, even though they show similar results in our analysis of the effect of age on employment in question (b) to (d).
 
 \newpage
 
