@@ -182,21 +182,21 @@ summary(probit_c)
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 ```
 
-The p-value of the coefficient of age is < 2.2e-16, which is close to zero. As it is less than our significance level (even regarding a significance level of 0.01%), we could reject the null hypothesis. Thus, based on our probit regression, we can conclude that age is a statistically significant determinant of employment in April 2009.
+The p-value of the coefficient of age is < 2.2e-16, which is close to zero. At a significance level of 0.01%, we can reject the null hypothesis. Thus, based on our probit regression, we can conclude that age is a statistically significant determinant of employment in April 2009.
 
 ```{r}
 margins(probit_c)
 ```
 
-The z-value of the *age* variable at 8.555 is a further evidence to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. 
+The z-value of the *age* variable at 8.555 is further evidence to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. 
 
 ### Question c-ii)
 
-*Is there evidence of a nonlinear effect of age on probability of being employed?*
+*Is there evidence of a nonlinear effect of age on the probability of being employed?*
 
 The p-value of the coefficient of age^2 is 4.748e-16, which is nearly zero as well. As it is less than our significance level, we could reject the null hypothesis. Thus, based on our probit regression, we could say age^2 is also a statistically significant determinant of employment in April 2009. The quadratic term is proved to be contributing to the model and therefore a non-linearity of *age* on the probability of being employed is detected.
 
-In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a probit model with *age* as the only regressor is run below. And then waldest is performed on both the models i.e. one model with *squared age* and the other without. The result of the waldtest confirms that both the models are different at less than 1% significance. Hence, it is confirmed that the *squared age* is significant and it is explaining the nonlinear effect of age on probability of being employed. 
+In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a probit model with *age* as the only regressor is run below. And then waldest is performed on both the models i.e. one model with *squared age* and the other without. The result of the waldtest confirms that both the models are different at less than 1% significance. Hence, it is confirmed that the *squared age* is significant and it explains the nonlinear effect of age on the probability of being employed. 
 
 ```{r}
 # regression to detect the linearity of the variable 'age' only
@@ -204,7 +204,7 @@ probit_c_1 <- glm(employed ~ age,
                   family = binomial(link = "probit"), data)
 waldtest(probit_c, probit_c_1)
 ```
-By looking at the waldtest between the LPM model and Probit model, we observe a p-value of < 2.2e-16, which is nearly zero. As p-value is less than the significance level(even considering a 0.01% here), we could reject the null hypothesis which states that the two models are the same. Therefore, our probit model is different from the LPM model, and the non-linearity of *age* on the probability of being employed is reinforced.
+By looking at the waldtest between the LPM model and the Probit model, we observe a p-value of < 2.2e-16, which is nearly zero. As p-value is less than the significance level(even considering a 0.01% here), we could reject the null hypothesis which states that the two models are the same. Therefore, our probit model is different from the LPM model, and the non-linearity of *age* on the probability of being employed is reinforced.
 
 
 ### Question c-iii)
