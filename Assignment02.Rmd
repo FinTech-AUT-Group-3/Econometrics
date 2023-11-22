@@ -331,8 +331,7 @@ model_df <- cbind(Model = model_names, model_df)
 model_df
 ```
 We can observe that the probability of being employed is 0.089%, 0.11%, and 0.12% in LPM,  Probit, Logit model, respectively. Thus, there are not much difference from our answers to question (b) to (d).
-However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. That is, bj gives the
-average change in Y associated with a one-unit increase in Xj.
+However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. 
 However, there is a limitation of LPM - the predicted probabilities can fall outside the [0, 1] range, and it may suffer from heteroscedasticity.
 
 Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
