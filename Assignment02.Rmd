@@ -38,6 +38,10 @@ library(ggplot2)
 library(knitr)
 library(margins)
 library(jtools)
+library(e1071) # For Naive Bayesian Classifier in (h)
+library(tree) # For dicision tree in (h)
+library(randomForest) # For random Forest in (h)
+library(class) # For k-NN in (h)
 ```
 
 ### Loading Data
