@@ -347,6 +347,9 @@ Thus, the three models are different from each other by definition, even though 
 
 \newpage
 
+The data set includes variables measuring the workers’ educational attainment, sex, race, marital
+status, region of the country, and weekly earnings in April 2008.
+
 ## Question f
 
 ```{r}
@@ -360,6 +363,8 @@ summary(lpm_f)
 
 ### Question f-i)
 
+*By adding those covariates to the linear probability model regression of point (b), investigate whether the conclusions on the effect of Age on employment from (b) are affected by omitted variable bias*
+
 The comparison between the initial linear regression model and the adjusted model reveals a small difference in the coefficients for *age* and *squared age*. In the initial model *lpm_b*, *age* and *squared age* exhibited significant effects in different directions on employment probability. In the adjusted model *lpm_f*, while the coefficients for *age* and *squared age* remain significant at a significance level of 1% with t-values at 8.087 and -7.954 respectively, the coefficient values have changed slightly. This difference suggests that the additional variables have impacted the interpretation of the *age*-related effects on *employed*. Namely, the introduction of new variables such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - points out potential omitted variable bias in the initial model.
 
 Additionally, the statistical significance of certain new variables including educational factors, regional factors and weekly earnings in the adjusted model highlights the importance of considering a broader set of factors. Moreover, the higher R-squared of the adjusted model indicates an increase in explanatory power which in turn suggests the added co-variates contribute to a better understanding of the variability in employment status.
@@ -367,6 +372,8 @@ Additionally, the statistical significance of certain new variables including ed
 To conclude, while these results might suggest the presence of some omitted variable bias in the initial model, the small coefficient difference for *age* and *squared age* between the two models and the fact they are still extremely significant in the adjusted model leads us to think there is not an impactful omitted variable bias. Nevertheless, it is important to point out that the adjusted model better explains the changes due to the added covariates
 
 ### Question f-ii)
+
+*Use the regression results to discuss the characteristics of workers who were hurt the most by the 2008 financial crisis*
 
 The regression results provide insights into the characteristics of workers particularly affected by the 2008 financial crisis.
 
