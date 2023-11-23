@@ -115,13 +115,13 @@ coeftest(lpm_b, vcov = vcovHC(lpm_b), type = "HC1")
 
 The *age* variable is a statistically significant determinant of 2009 April Employment rate. The linear probability model with *age* and squared *age* regressed on *employed* gives a relationship of $$ employed = 0.3218 + 0.02746 \times age - 0.0003159 \times age^2$$.
 
-On average, one-unit increase in *age* is associated with an increase of 0.02746 in the probability of employment. The t-value of the *age* variable at 9.491 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*.
+The t-value of the *age* variable at 9.491 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*. This variable stays significant even after adjustment for hetero skedasticity with a t-vale of 7.9662.
 
 ### Question b-ii)
 
 *Is there evidence of a nonlinear effect of age on probability of being employed?*
 
-The above linear probability model indicates a downward curvature in the relationship between *squared age* and employment rate in April 2009. Any one unit of age rise is expected to decrease the probability of being employed by $$3.159 \times 10^{-4}$$ unit. A p-value of less than $$2 \times 10^{-16}$$ of the *squared age* variable suggests there is strong evidence against the null hypothesis that the true coefficient of *squared age* is zero. With a statistically significant t-value of -9.08, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
+The above linear probability model indicates a inverted parabola in the relationship between *squared age* and employment rate in April 2009. Any one unit of age rise is expected to decrease the probability of being employed by $$3.159 \times 10^{-4}$$ unit. A p-value of less than $$2 \times 10^{-16}$$ of the *squared age* variable suggests there is strong evidence against the null hypothesis that the true coefficient of *squared age* is zero. With a statistically significant t-value of -9.08, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
 
 In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a linear probability model *lpm_b_1* with *age* as the only regressor is run below. With a much higher F-statistics at 47.59, the main regression *lpm_b* in question b-i carries better overall fitting goodness of the dependent variable *employed*, and *squared age* thereon should be included in a linear regression to model it. 
 ```{r}
@@ -143,7 +143,18 @@ lpm_prediction <- predict(lpm_b, new_data, type = "response")
 names(lpm_prediction) <- c("Age 20", "Age 40", "Age 60")
 print(list(lpm_prediction = lpm_prediction))
 ```
-Based on the linear probability model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 74.47%, 91.48% and 83.22% respectively under the assumption of a linear relationship of both the linear and the quadratic forms of *age* on *employed*. The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. As age grows and people step into employment finishing higher-level education, the prediction of *employed* probability level peaks at 40 years. It drops by over 8%, but still higher than the 20-year-old prediction, at a predicted *age* level of 60 as people starts to retire or to quit job while more are expected to continue working to an older age.
+Based on the linear probability model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 74.47%, 91.48% and 83.22% respectively under the assumption of a linear relationship of both the linear and the quadratic forms of *age* on *employed*. 
+
+```{r}
+age <- seq(18, 63)
+
+ggplot(data, aes(x=age, fill= as.factor(employed))) + 
+  geom_bar(position = "dodge", stat = "count") +   
+  labs(title = "Employment Status by Age", x = "Age",y = "Count")
+```
+A sample *age* sequence from 18 to 63 was further created in order to detect the movement of *employed*. The *unemployed* variable stays within a consistent range across different age levels. The increasing trend of the employment probability, on the other hand, inverted in the *age* range around 40 to 50 to decrease against age level.
+
+This is consistent with what happens in the real world after an economic recession. Younger individuals often have less work experience and may be employed in entry-level positions that are more susceptible to economic fluctuations. Individuals in the middle-age bracket may have accumulated a moderate level of experience, potentially making them more resilient to job losses during economic downturns. Job security for older individuals decreases post-recession, possibly due to factors such as industry restructuring, technological advancements, or age-related biases.
 
 ```{r}
 a = lpm_b$coefficients[3]
@@ -152,17 +163,13 @@ c = lpm_b$coefficients[1]
 f = function(x) {
   a * x ^ 2 + b * x + c
 }
-age <- seq(15, 75)
+
 plot(age, f(age), type = 'l', ylab = "probability of being employed")
 
 print(paste("The age with the highest probability of being employed in 2009 is",
             round(- b / (2 * a), 1)))
-
-ggplot(data, aes(x=age, fill= as.factor(employed))) + 
-  geom_bar(position = "dodge", stat = "count") +   
-  labs(title = "Employment Status by Age", x = "Age",y = "Count")
 ```
-A sample *age* sequence from 15 to 75 was further created in order to detect the movement of *employed*. The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The U-shape of the curve again emphasized non-linearity of the linear probability model as the increasing trend did not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of quadratic relatioship.
+The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The U-shape of the curve again emphasized non-linearity of the linear probability model as the increasing trend did not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of quadratic relatioship.
 
 \newpage
 
@@ -186,7 +193,7 @@ summary(probit_c)
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 ```
 
-The p-value of the coefficient of age is < 2.2e-16, which is close to zero. At a significance level of 0.01%, we can reject the null hypothesis. Thus, based on our probit regression, we can conclude that age is a statistically significant determinant of employment in April 2009.
+The p-value of the coefficient of age is less than $$2 \times 10^{-16}$$, which is close enough to zero. At a significance level of 1% the null hypothesis can be rejected. Thus, based on our probit regression, it can be concluded that *age* is a statistically significant determinant of *employed* in April 2009.
 
 ```{r}
 margins(probit_c)
@@ -208,7 +215,7 @@ probit_c_1 <- glm(employed ~ age,
                   family = binomial(link = "probit"), data)
 waldtest(probit_c, probit_c_1)
 ```
-By looking at the waldtest between the LPM model and the Probit model, we observe a p-value of < 2.2e-16, which is nearly zero. As p-value is less than the significance level(even considering a 0.01% here), we could reject the null hypothesis which states that the two models are the same. Therefore, our probit model is different from the LPM model, and the non-linearity of *age* on the probability of being employed is reinforced.
+By looking at the Wald test between the LPM model and the Probit model,a p-value of less than 2.2*10^(-16) is observed, which is nearly zero. As p-value is less than the significance level (even considering a 1% here), the null hypothesis could be rejected which states that the two models are the same. Therefore, the probit model is different from the LPM model, and the non-linearity of *age* on the probability of the probability being employed is reinforced.
 
 
 ### Question c-iii)
@@ -240,7 +247,7 @@ print(paste("The age with the highest probability of being employed in 2009 is",
 ```
 Based on the probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. This means, for example, a 20-year-old worker is predicted to be employed in April 2009 with a probability of 0.7327351, based on the historical data we have. 
 
-The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 are still in education or are searching for job entries. And the old people may face some physical restrictions while working, which may also have a significant impact on their chance of getting employed. While the middle-age people are the main workforce in society with their better physical and experiential conditions. Such trend can also be shown in our plot of probability of being employed under probit module.
+The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 have less experience and thereon face greater exposure to unemployment risk at economic recession. And the old people may face some physical restrictions while working, which may also have a significant impact on their chance of getting employed. While the middle-age people are the main workforce in society with their better physical and experiential conditions. Such trend can also be shown in our plot of probability of being employed under probit model.
 
 \newpage
 
@@ -301,7 +308,7 @@ names(logit_prediction) <- c("Age 20", "Age 40", "Age 60")
 print(list(logit_prediction = logit_prediction))
 ```
 
-Based on the *logit_d* model, a new data set is created given the specified values of the predictors *age* and *squared age*. With another similar tendency, the logit prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 72.86%, 91.06% and 83.58% respectively. The observed dip in the predicted employment probability at the age of 20 can be attributed to the likelihood that individuals in this age group are often engaged in education. As people age and transition into the workforce after completing higher education, the predicted probability of being employed rises up until a certain age. This probability then starts to decline, reflecting the phase where individuals may retire or voluntarily exit the workforce. This trend is evident in the comparison between the employment probabilities at the ages of 60 and 40, with the probability at 60 being lower than that at 40.
+Based on the *logit_d* model, a new data set is created given the specified values of the predictors *age* and *squared age*. With another similar tendency, the logit prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 72.86%, 91.06% and 83.58% respectively.
 
 ```{r}
 a = logit_d$coefficients[3]
@@ -316,7 +323,7 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 print(paste("The age with the highest probability of being employed in 2009 is", round(- b / (2 * a), 1)))
 ```
 
-Again the sample *age* sequence from 15 to 75 was created to plot the employment probability curve with a similar depicted curve tendency and a similar *age* peak at 43.2 years old. Beyond this peak point, the rising employment probability starts to decline, illustrating a characteristic quadratic relationship. The value of *employed* diminishes at both tails to underscore the non-linear nature of the logistic regression model.
+Again the sample *age* sequence from 18 to 63 was created to plot the employment probability curve with a similar depicted curve tendency and a similar *age* peak at 43.2 years old. Beyond this peak point, the rising employment probability starts to decline, illustrating a characteristic quadratic relationship. The value of *employed* diminishes at both tails to underscore the non-linear nature of the logistic regression model.
 
 \newpage
 
@@ -340,8 +347,7 @@ However, there is a limitation of LPM - the predicted probabilities can fall out
 
 Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
 
-In the logit model, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing Xs by one unit changes the log odds by bj units. Equivalently, the odds change in % by exp(bj).
-Both Probit and Logic models will have the predicted probabilities lying in the range of [0,1]. 
+Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
 
 Thus, the three models are different from each other by definition, even though they show similar results in our analysis of the effect of age on employment in question (b) to (d).
 
