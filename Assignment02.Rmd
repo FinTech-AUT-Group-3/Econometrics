@@ -400,6 +400,8 @@ Overall, the analysis suggests that the 2008 financial crisis disproportionately
 
 ## Question (g)
 
+In this question we examine the in-sample accuracy using the the three models established in question b to d, i.e., the linear probability model, the probit model and the logit model that regress Employed on Age and Age^2. The methodology is to make predictions using the three models separately, but using the original data rather than new data. Based on the prediction result, we make binary classification. If the prediction value is larger than 0.5, we classify it to 1, which means the individual will be employed. Otherwise if the prediction value is less than 0.5, we classify it to 0, which means that the individual will not be employed. Next, we compare the classified prediction result on employment with real employment case. The total percentage that prediction employment status is equal to the the real employment case will be the in-sample accuracy of the models.
+
 ```{r}
 # Predictions for models b, c, d (In-sample)
 predictions_b_raw <- predict(lpm_b, data, type = "response")  # For linear probability model
@@ -424,16 +426,23 @@ print(paste("The proportion of correctly assigned classes of model c is ", lpm_c
 print(paste("The proportion of correctly assigned classes of model d is ", lpm_d_accuracy*100, "%"))
 
 ```
-From the in-sample test, the proportion of correctly assgined classes for model b-d are all 87.5130944898387%.
-Actually, the binary classification of the three models' prediction results are identical.
+
+From the in-sample test, the proportion of correctly assigned classes for model b-d are all 87.513%. Although there are difference in raw in-sample predictions among these three models, the binary classification of the three models' prediction results are actually identical.
 
 ```{r}
+if(identical(predictions_b_raw, predictions_c_raw) && identical(predictions_b_raw, predictions_d_raw))  {
+  print("The in-sample prediction of the three models' predictions are identical.")
+} else {
+  print("The in-sample prediction of the three models' predictions are not identical.")
+}
+
 if(identical(predictions_b, predictions_c) && identical(predictions_b, predictions_d))  {
   print("The binary classification of the three models' predictions are identical.")
 } else {
   print("The binary classification of the three models' predictions are not identical.")
 }
 ```
+This result implies that although the three models have difference in regression principles, they are consistent in showing the strong correlation between the prediction target employment status and predictors *age* and *squared age*. In the other hand, it shows that by predicting employment status through *age* and *squared age* is not comprehensive enough as there is over 12% error in all three models. The introduction of other predictors such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - are also necessary in comparing.
 
 \newpage
 
@@ -446,6 +455,10 @@ nb_predictions <- predict(nb_model, data, type = "class")
 nb_accuracy <- sum(nb_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Naive Bayes Classifier is ", nb_accuracy))
 ```
+The Naive Bayes classifier operates on the principle of Bayes' theorem with a simplifying assumption that features are independent. Despite this naive assumption, it effectively computes the probability of a data point belonging to a certain class by evaluating the conditional probabilities of each feature given the class label. Naive Bayes excels in processing large datasets due to its computational efficiency and general robustness. It has been proven remarkably effective even when the independence assumption doesn't hold perfectly in real-world datasets.
+
+The accuracy of Naive Bayes classifier in this scenario is equal to that of LPM, probit and logit model. The reason could be that the non-linearity between age and employment is not that strong and the features are nearly independent. Under those circumstances, Naive Bayes classifier could achieve comparable accuracy to linear models like LPM, probit, or logit.
+
 (2) Linear Discriminant Analysis
 ```{r}
 lda_model <- lda(as.factor(employed) ~ age + I(`age`^2), data)
@@ -453,6 +466,12 @@ lda_predictions <- predict(lda_model, data)$class
 lda_accuracy <- sum(lda_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Linear Discriminant Analysis is ", lda_accuracy))
 ```
+Linear Discriminant Analysis (LDA) is a dimensionality reduction and classification technique used in machine learning and statistics. It aims to find a linear combination of features that characterizes or separates two or more classes in the data. LDA identifies the axes (linear discriminants) that maximize the separation between classes while minimizing the variance within each class. By projecting the data onto these discriminative axes, LDA transforms the original features into a lower-dimensional space, making it easier to visualize and classify the data. It’s particularly effective when the classes are well-separated and the assumptions of normally distributed classes with equal covariance matrices hold, enabling it to efficiently classify new data points based on their projected positions in this reduced space.
+
+The accuracy of LDA in this scenario is equal to that of LPM, probit and logit model.The reason could be that the dimension in this model is particularly low, only consisting the features of ages. In scenarios where the data has a lower number of dimensions and the linear separability assumption holds, LDA might perform equally well as linear models. LDA is particularly effective in reducing dimensionality while preserving discriminatory information.
+
+However, it is important to acknowledge that although Naive Bayes Classifier results in the same outcome of LDA in this particular scenario, the scenarios where both models perform equally well might be limited as they make different underlying assumptions about the data. Naive Bayes tends to perform well even with relatively less data and when the independence assumption isn't severely violated, while LDA's effectiveness relies more on the linear separability of the classes and the adherence to its assumptions. 
+
 (3) Quadratic Discriminant Analysis
 ```{r}
 qda_model <- qda(as.factor(employed) ~ age + I(`age`^2), data)
@@ -460,6 +479,10 @@ qda_predictions <- predict(qda_model, data)$class
 qda_accuracy <- sum(qda_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Quadratic Discriminant Analysis is ", qda_accuracy))
 ```
+Quadratic Discriminant Analysis (QDA) is a classification technique similar to Linear Discriminant Analysis (LDA) but without the assumption of equal covariance matrices across classes. QDA calculates separate covariance matrices for each class, allowing for more flexibility in modeling the decision boundary between classes. By considering different covariance structures, QDA can capture nonlinear decision boundaries, making it more adaptable to datasets where classes have distinct and non-linear separations. QDA can be particularly powerful when the assumption of equal covariance matrices across classes, which is required by LDA, doesn’t hold in the dataset, enabling better adaptation to the true underlying data distribution and potentially leading to improved classification accuracy.
+
+However, QDA's flexibility comes at the cost of increased model complexity, requiring estimation of more parameters and potentially being more prone to overfitting with smaller datasets compared to LDA. In this scenario, we only set parameters through ages and do not provide complex parameters that QDA needs. And that could be the reason why QDA performs worse than the LDA and all the models prior to it.
+
 (4) Decision trees
 ```{r}
 tree_model <- tree(as.factor(employed) ~ age + I(`age`^2), data)
@@ -467,6 +490,10 @@ tree_predictions <- predict(tree_model, data, type = "class")
 tree_accuracy <- sum(tree_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Decision Tree is ", tree_accuracy))
 ```
+Decision trees are versatile, non-parametric supervised learning models used for both classification and regression tasks. They hierarchically partition the feature space into segments based on the data's features, creating a tree-like structure where each internal node represents a feature test, each branch represents an outcome of that test, and each leaf node represents a class label or a predicted value. By sequentially splitting the data based on the most informative features, decision trees aim to maximize homogeneity within each resulting subset regarding the target variable. Their interpretability, ability to handle both numerical and categorical data, and resistance to outliers make them popular.
+
+The weakness of decision trees is that they are prone to overfitting, especially with complex structures or noisy data, which can be mitigated through techniques like pruning or using ensemble methods like random forests or gradient boosting. In this scenario we do not require decision tree to predict complex structures, but only require it to predict simple regression on age, squared age and predict employment. So decision tree here could reach the same level of accuracy of LPM and other models.
+
 (5) Random forests
 ```{r}
 set.seed(123) # Setting a seed for reproducibility
@@ -475,6 +502,10 @@ rf_predictions <- predict(rf_model, data)
 rf_accuracy <- sum(rf_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Random Forest (100 trees) is ", rf_accuracy))
 ```
+Random Forest is based on decision tree classifiers that builds multiple decision trees and merges their predictions to improve accuracy and reduce overfitting. It operates by creating a diverse set of decision trees through random sampling of both data points (bootstrap aggregating or "bagging") and features at each split. By aggregating predictions from these trees, typically through averaging for regression tasks or voting for classification, Random Forest reduces the variance and tends to yield more robust and accurate predictions than a single decision tree.
+
+The optimisation allows random forests to handle high-dimensional data, maintain good performance with default parameters, and provide insights into feature importance.In this scenario we do not provide a high-dimensional environment and cannot show the advantage that random forest improves at complex models. The accuracy on low dimensional age - employment prediction of random forest remains the same of decision trees.
+
 (6) K-Nearest Neighbours
 ```{r}
 # First scale the data since kNN is sensitive to the scale of the data
@@ -487,6 +518,9 @@ knn_predictions <- knn(train = scaled_data, test = scaled_data, cl = as.factor(d
 knn_accuracy <- sum(knn_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for KNN (k=5, 5 nearest neighbours) is ", knn_accuracy))
 ```
+K-Nearest Neighbors (KNN) is a simple yet effective supervised learning algorithm used for both classification and regression tasks. It works by memorizing the entire training dataset and classifying new instances based on their similarity to the known data points. The algorithm determines the class of a new data point by looking at the majority class among its K nearest neighbors, where the "closeness" is typically computed using distance metrics like Euclidean or Manhattan distance in the feature space. 
+
+KNN’s simplicity and flexibility make it easy to implement, especially for small to medium-sized datasets, but it might be computationally expensive with larger datasets due to its need to store and compute distances for all training instances. Additionally, choosing the right value of K and appropriate distance metrics is crucial for optimal performance. In this small sized dataset scenario, KNN performs with similarly accuracy between different K values and remains the same of previous models like LPM because the data is sparse and doesn’t have a large number of dimensions.
 
 --END--
 
