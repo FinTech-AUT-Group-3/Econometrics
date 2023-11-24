@@ -342,14 +342,17 @@ model_df <- cbind(Model = model_names, model_df)
 model_df
 ```
 The probabilities of being employed are 0.089%, 0.11%, and 0.12% observed from the Linear Probability Model (LPM),  Probit, Logit models, respectively. Thus, there are not much difference from the answers to question (b) to (d).
-However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. 
-However, there is a limitation of LPM - the predicted probabilities can fall outside the usual probability [0, 1] range, and it may suffer from heteroscedasticity.
+However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. However, there is a limitation of LPM - the predicted probabilities can fall outside the usual probability [0, 1] range, and it may suffer from heteroscedasticity.
 
 Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
 
 Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
 
+
+Regarding to the limitations of Probit and Logit model, they are both logistic regression models and have a non-linear relationship between the independent variables and the probability of the event occurring. While this is often more realistic than the linear probability model, it can make interpretation more complex.
+
 Thus, the three models are different from each other by definition, even though they show similar results in our analysis of the effect of age on employment in question (b) to (d).
+
 
 \newpage
 
