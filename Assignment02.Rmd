@@ -113,15 +113,15 @@ summary(lpm_b)
 coeftest(lpm_b, vcov = vcovHC(lpm_b), type = "HC1")
 ```
 
-The *age* variable is a statistically significant determinant of 2009 April Employment rate. The linear probability model with *age* and squared *age* regressed on *employed* gives a relationship of $$ employed = 0.3218 + 0.02746 \times age - 0.0003159 \times age^2$$.
+The *age* variable is a statistically significant determinant of the 2009 April Employment rate. The linear probability model with *age* and squared *age* regressed on *employed* gives a relationship of $$ employed = 0.3218 + 0.02746 \times age - 0.0003159 \times age^2$$.
 
-The t-value of the *age* variable at 9.491 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*. This variable stays significant even after adjustment for hetero skedasticity with a t-vale of 7.9662.
+The t-value of the *age* variable at 9.491 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value is less than $$2 \times 10^{-16}$$, which is considerably smaller than the significance level, further supporting that *age* is a statically significant predictor of *employed*. This variable stays significant even after adjustment for heteroskedasticity with a t-vale of 7.9662.
 
 ### Question b-ii)
 
-*Is there evidence of a nonlinear effect of age on probability of being employed?*
+*Is there evidence of a nonlinear effect of age on the probability of being employed?*
 
-The above linear probability model indicates a inverted parabola in the relationship between *squared age* and employment rate in April 2009. Any one unit of age rise is expected to decrease the probability of being employed by $$3.159 \times 10^{-4}$$ unit. A p-value of less than $$2 \times 10^{-16}$$ of the *squared age* variable suggests there is strong evidence against the null hypothesis that the true coefficient of *squared age* is zero. With a statistically significant t-value of -9.08, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
+The above linear probability model indicates an inverted parabola in the relationship between *squared age* and employment rate in April 2009. Any one unit of age rise is expected to decrease the probability of being employed by $$3.159 \times 10^{-4}$$ unit. A p-value of less than $$2 \times 10^{-16}$$ of the *squared age* variable suggests there is strong evidence against the null hypothesis that the true coefficient of *squared age* is zero. With a statistically significant t-value of -9.08, the quadratic term is proved to be contributing to the model and thereon a non-linearity of *age* on the probability of being employed is detected.
 
 In order to further prove the non-linearity, i.e. to prove the significance of the squared term of *age*, a linear probability model *lpm_b_1* with *age* as the only regressor is run below. With a much higher F-statistics at 47.59, the main regression *lpm_b* in question b-i carries better overall fitting goodness of the dependent variable *employed*, and *squared age* thereon should be included in a linear regression to model it. 
 ```{r}
@@ -129,7 +129,7 @@ In order to further prove the non-linearity, i.e. to prove the significance of t
 lpm_b_1 <- lm(employed ~ age, data = data)
 waldtest(lpm_b, lpm_b_1)
 ```
-Taking the main regression *lpm_b* as the fitted objective, a Wald test has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that coefficients of these two models are the same can be rejected at significance level of 1% with a F-statistics of 82.439. Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference to the regression. The importance of the squared term proves against the linearity of *age*.
+Taking the main regression *lpm_b* as the fitted objective, a Wald test has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that the coefficients of these two models are the same can be rejected at a significance level of 1% with a F-statistics of 82.439. Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference in the regression. The importance of the squared term proves against the linearity of *age*.
 
 ### Question b-iii)
 
@@ -152,9 +152,9 @@ ggplot(data, aes(x=age, fill= as.factor(employed))) +
   geom_bar(position = "dodge", stat = "count") +   
   labs(title = "Employment Status by Age", x = "Age",y = "Count")
 ```
-A sample *age* sequence from 18 to 63 was further created in order to detect the movement of *employed*. The *unemployed* variable stays within a consistent range across different age levels. The increasing trend of the employment probability, on the other hand, inverted in the *age* range around 40 to 50 to decrease against age level.
+A sample *age* sequence from 18 to 63 was further created in order to detect the movement of *employed*. The *unemployed* variable stays within a consistent range across different age levels. On the other hand, the increasing trend of the employment probability inverted in the *age* range around 40 to 50 to decrease against age level.
 
-This is consistent with what happens in the real world after an economic recession. Younger individuals often have less work experience and may be employed in entry-level positions that are more susceptible to economic fluctuations. Individuals in the middle-age bracket may have accumulated a moderate level of experience, potentially making them more resilient to job losses during economic downturns. Job security for older individuals decreases post-recession, possibly due to factors such as industry restructuring, technological advancements, or age-related biases.
+This is consistent with what happens in the real world after an economic recession. Younger individuals often have less work experience and may be employed in entry-level positions more susceptible to economic fluctuations. Individuals in the middle-age bracket may have accumulated a moderate level of experience, potentially making them more resilient to job losses during economic downturns. Job security for older individuals decreases post-recession, possibly due to industry restructuring, technological advancements, or age-related biases.
 
 ```{r}
 a = lpm_b$coefficients[3]
@@ -169,7 +169,7 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 print(paste("The age with the highest probability of being employed in 2009 is",
             round(- b / (2 * a), 1)))
 ```
-The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The U-shape of the curve again emphasized non-linearity of the linear probability model as the increasing trend did not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of quadratic relatioship.
+The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The U-shape of the curve again emphasized the non-linearity of the linear probability model as the increasing trend did not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of the quadratic relationship.
 
 \newpage
 
@@ -193,7 +193,7 @@ summary(probit_c)
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 ```
 
-The p-value of the coefficient of age is less than $$2 \times 10^{-16}$$, which is close enough to zero. At a significance level of 1% the null hypothesis can be rejected. Thus, based on our probit regression, it can be concluded that *age* is a statistically significant determinant of *employed* in April 2009.
+The p-value of the coefficient of age is less than $$2 \times 10^{-16}$$, which is close enough to zero. At a significance level of 1%, the null hypothesis can be rejected. Thus, based on our probit regression, it can be concluded that *age* is a statistically significant determinant of *employed* in April 2009.
 
 ```{r}
 margins(probit_c)
@@ -215,7 +215,7 @@ probit_c_1 <- glm(employed ~ age,
                   family = binomial(link = "probit"), data)
 waldtest(probit_c, probit_c_1)
 ```
-By looking at the Wald test between the LPM model and the Probit model,a p-value of less than 2.2*10^(-16) is observed, which is nearly zero. As p-value is less than the significance level (even considering a 1% here), the null hypothesis could be rejected which states that the two models are the same. Therefore, the probit model is different from the LPM model, and the non-linearity of *age* on the probability of the probability being employed is reinforced.
+By looking at the Wald test between the LPM model and the Probit model, a p-value of less than 2.2*10^(-16) is observed, which is nearly zero. As the p-value is less than the significance level (even considering a 1% here), the null hypothesis could be rejected which states that the two models are the same. Therefore, the probit model is different from the LPM model, and the non-linearity of *age* on the probability of the probability being employed is reinforced.
 
 
 ### Question c-iii)
@@ -247,7 +247,7 @@ print(paste("The age with the highest probability of being employed in 2009 is",
 ```
 Based on the probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. This means, for example, a 20-year-old worker is predicted to be employed in April 2009 with a probability of 0.7327351, based on the historical data we have. 
 
-The lowest predicted employment probability shows in an *age* of 20 might be due to the fact that people at a younger age of 20 have less experience and thereon face greater exposure to unemployment risk at economic recession. And the old people may face some physical restrictions while working, which may also have a significant impact on their chance of getting employed. While the middle-age people are the main workforce in society with their better physical and experiential conditions. Such trend can also be shown in our plot of probability of being employed under probit model.
+The lowest predicted employment probability at the *age* of 20 might be due to the fact that people at a younger age of 20 have less experience and therefore face greater exposure to unemployment risk in an economic recession. And the old people may face some physical restrictions while working, which may also have a significant impact on their chances of getting employed. Middle-aged people are the main workforce in society with their better physical and experiential conditions. Such a trend can also be shown in our plot of the probability of being employed under the probit model.
 
 \newpage
 
@@ -270,15 +270,15 @@ summary(logit_d)
 # t test - statistical significance of coefficients
 coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
 ```
-The logistic regression is a statistical method used for modeling the probability of a dependent variable is categorical with two levels at 0 and 1, in this case the *employed* binary variable. The sigmoid function is used to model the relationship of *age* and *squared age* against the employment probability.
+The logistic regression is a statistical method used for modelling the probability that a dependent variable is categorical with two levels at 0 and 1, in this case, the *employed* binary variable. The sigmoid function is used to model the relationship of *age* and *squared age* against the employment probability.
 
-Based on the above result, the *age* variable is a statistically significant determinant of April 2009 Employment probability rate with over 99% confidence level as the model p-value is less than 0.01. One-unit change in *age* shall lead to 0.2187 units of change in the log-odds of the corresponding dependent variable *employed*.
+Based on the above result, the *age* variable is a statistically significant determinant of the April 2009 Employment probability rate with over 99% confidence level as the model p-value is less than 0.01. One-unit change in *age* shall lead to 0.2187 units of change in the log-odds of the corresponding dependent variable *employed*.
 
 ```{r}
 margins(logit_d)
 ```
 
-The z-value of the *age* variable at 8.7968 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value being less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supports that *age* is a statically significant predictor of *employed*.
+The z-value of the *age* variable at 8.7968 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value is less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supporting that *age* is a statically significant predictor of *employed*.
 
 ### Question d-ii)
 
@@ -341,15 +341,15 @@ model_names <- c("LPM", "Probit", "Logit")
 model_df <- cbind(Model = model_names, model_df)
 model_df
 ```
-The probabilities of being employed are 0.089%, 0.11%, and 0.12% observed from the Linear Probability Model (LPM),  Probit, Logit models, respectively. Thus, there are not much difference from the answers to question (b) to (d).
+The probabilities of being employed are 0.089%, 0.11%, and 0.12% observed from the Linear Probability Model (LPM),  Probit, and Logit models, respectively. Thus, there is not much difference between the answers to questions (b) to (d).
 However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. However, there is a limitation of LPM - the predicted probabilities can fall outside the usual probability [0, 1] range, and it may suffer from heteroscedasticity.
 
 Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
 
-Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
+Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modelled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by an exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
 
 
-Regarding to the limitations of Probit and Logit model, they are both logistic regression models and have a non-linear relationship between the independent variables and the probability of the event occurring. While this is often more realistic than the linear probability model, it can make interpretation more complex.
+Regarding the limitations of the Probit and Logit models, they are both logistic regression models and have a non-linear relationship between the independent variables and the probability of the event occurring. While this is often more realistic than the linear probability model, it can make interpretation more complex.
 
 Thus, the three models are different from each other by definition, even though they show similar results in our analysis of the effect of age on employment in question (b) to (d).
 
@@ -400,7 +400,7 @@ Overall, the analysis suggests that the 2008 financial crisis disproportionately
 
 ## Question (g)
 
-In this question we examine the in-sample accuracy using the the three models established in question b to d, i.e., the linear probability model, the probit model and the logit model that regress Employed on Age and Age^2. The methodology is to make predictions using the three models separately, but using the original data rather than new data. Based on the prediction result, we make binary classification. If the prediction value is larger than 0.5, we classify it to 1, which means the individual will be employed. Otherwise if the prediction value is less than 0.5, we classify it to 0, which means that the individual will not be employed. Next, we compare the classified prediction result on employment with real employment case. The total percentage that prediction employment status is equal to the the real employment case will be the in-sample accuracy of the models.
+In this question, we examine the in-sample accuracy using the three models established in question b to d, i.e., the linear probability model, the probit model, and the logit model that regress Employed on Age and Age^2. The methodology is to make predictions using the three models separately, but using the original data rather than new data. Based on the prediction result, we make binary classification. If the prediction value is larger than 0.5, we classify it as 1, which means the individual will be employed. Otherwise, if the prediction value is less than 0.5, we classify it as 0, which means that the individual will not be employed. Next, we compare the classified prediction result on employment with the real employment case. The total percentage that prediction employment status is equal to the the real employment case will be the in-sample accuracy of the models.
 
 ```{r}
 # Predictions for models b, c, d (In-sample)
@@ -427,7 +427,7 @@ print(paste("The proportion of correctly assigned classes of model d is ", lpm_d
 
 ```
 
-From the in-sample test, the proportion of correctly assigned classes for model b-d are all 87.513%. Although there are difference in raw in-sample predictions among these three models, the binary classification of the three models' prediction results are actually identical.
+From the in-sample test, the proportion of correctly assigned classes for models b-d is 87.513% for all models. Although there are differences in raw in-sample predictions among these three models, the binary classification of the three models' prediction results are actually identical.
 
 ```{r}
 if(identical(predictions_b_raw, predictions_c_raw) && identical(predictions_b_raw, predictions_d_raw))  {
@@ -442,7 +442,7 @@ if(identical(predictions_b, predictions_c) && identical(predictions_b, predictio
   print("The binary classification of the three models' predictions are not identical.")
 }
 ```
-This result implies that although the three models have difference in regression principles, they are consistent in showing the strong correlation between the prediction target employment status and predictors *age* and *squared age*. In the other hand, it shows that by predicting employment status through *age* and *squared age* is not comprehensive enough as there is over 12% error in all three models. The introduction of other predictors such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - are also necessary in comparing.
+This result implies that although the three models have differences in regression principles, they are consistent in showing the strong correlation between the prediction target employment status and predictors *age* and *squared age*. On the other hand, it shows that predicting employment status through *age* and *squared age* is not comprehensive enough as there is over 12% error in all three models. The introduction of other predictors such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - are also necessary for comparing.
 
 \newpage
 
@@ -455,9 +455,9 @@ nb_predictions <- predict(nb_model, data, type = "class")
 nb_accuracy <- sum(nb_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Naive Bayes Classifier is ", nb_accuracy))
 ```
-The Naive Bayes classifier operates on the principle of Bayes' theorem with a simplifying assumption that features are independent. Despite this naive assumption, it effectively computes the probability of a data point belonging to a certain class by evaluating the conditional probabilities of each feature given the class label. Naive Bayes excels in processing large datasets due to its computational efficiency and general robustness. It has been proven remarkably effective even when the independence assumption doesn't hold perfectly in real-world datasets.
+The Naïve Bayes classifier operates on the principle of Bayes' theorem with a simplifying assumption that features are independent. Despite this naive assumption, it effectively computes the probability of a data point belonging to a certain class by evaluating the conditional probabilities of each feature given the class label. Naive Bayes excels in processing large datasets due to its computational efficiency and general robustness. It has been proven remarkably effective even when the independence assumption doesn't hold perfectly in real-world datasets.
 
-The accuracy of Naive Bayes classifier in this scenario is equal to that of LPM, probit and logit model. The reason could be that the non-linearity between age and employment is not that strong and the features are nearly independent. Under those circumstances, Naive Bayes classifier could achieve comparable accuracy to linear models like LPM, probit, or logit.
+The accuracy of the Naïve Bayes classifier in this scenario is equal to that of LPM, probit, and logit models. The reason could be that the non-linearity between age and employment is not that strong and the features are nearly independent. Under those circumstances, the Naïve Bayes classifier could achieve comparable accuracy to linear models like LPM, probit, or logit.
 
 (2) Linear Discriminant Analysis
 ```{r}
@@ -468,7 +468,7 @@ print(paste("In-sample accuracy for Linear Discriminant Analysis is ", lda_accur
 ```
 Linear Discriminant Analysis (LDA) is a dimensionality reduction and classification technique used in machine learning and statistics. It aims to find a linear combination of features that characterizes or separates two or more classes in the data. LDA identifies the axes (linear discriminants) that maximize the separation between classes while minimizing the variance within each class. By projecting the data onto these discriminative axes, LDA transforms the original features into a lower-dimensional space, making it easier to visualize and classify the data. It’s particularly effective when the classes are well-separated and the assumptions of normally distributed classes with equal covariance matrices hold, enabling it to efficiently classify new data points based on their projected positions in this reduced space.
 
-The accuracy of LDA in this scenario is equal to that of LPM, probit and logit model.The reason could be that the dimension in this model is particularly low, only consisting the features of ages. In scenarios where the data has a lower number of dimensions and the linear separability assumption holds, LDA might perform equally well as linear models. LDA is particularly effective in reducing dimensionality while preserving discriminatory information.
+The accuracy of LDA in this scenario is equal to that of LPM, probit and logit models. The reason could be that the dimension in this model is particularly low, only consisting of the features of ages. In scenarios where the data has a lower number of dimensions and the linear separability assumption holds, LDA might perform equally well as linear models. LDA is particularly effective in reducing dimensionality while preserving discriminatory information.
 
 However, it is important to acknowledge that although Naive Bayes Classifier results in the same outcome of LDA in this particular scenario, the scenarios where both models perform equally well might be limited as they make different underlying assumptions about the data. Naive Bayes tends to perform well even with relatively less data and when the independence assumption isn't severely violated, while LDA's effectiveness relies more on the linear separability of the classes and the adherence to its assumptions. 
 
@@ -479,9 +479,9 @@ qda_predictions <- predict(qda_model, data)$class
 qda_accuracy <- sum(qda_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Quadratic Discriminant Analysis is ", qda_accuracy))
 ```
-Quadratic Discriminant Analysis (QDA) is a classification technique similar to Linear Discriminant Analysis (LDA) but without the assumption of equal covariance matrices across classes. QDA calculates separate covariance matrices for each class, allowing for more flexibility in modeling the decision boundary between classes. By considering different covariance structures, QDA can capture nonlinear decision boundaries, making it more adaptable to datasets where classes have distinct and non-linear separations. QDA can be particularly powerful when the assumption of equal covariance matrices across classes, which is required by LDA, doesn’t hold in the dataset, enabling better adaptation to the true underlying data distribution and potentially leading to improved classification accuracy.
+Quadratic Discriminant Analysis (QDA) is a classification technique similar to Linear Discriminant Analysis (LDA) but without the assumption of equal covariance matrices across classes. QDA calculates separate covariance matrices for each class, allowing for more flexibility in modelling the decision boundary between classes. By considering different covariance structures, QDA can capture nonlinear decision boundaries, making it more adaptable to datasets where classes have distinct and non-linear separations. QDA can be particularly powerful when the assumption of equal covariance matrices across classes, which is required by LDA, doesn’t hold in the dataset, enabling better adaptation to the true underlying data distribution and potentially leading to improved classification accuracy.
 
-However, QDA's flexibility comes at the cost of increased model complexity, requiring estimation of more parameters and potentially being more prone to overfitting with smaller datasets compared to LDA. In this scenario, we only set parameters through ages and do not provide complex parameters that QDA needs. And that could be the reason why QDA performs worse than the LDA and all the models prior to it.
+However, QDA's flexibility comes at the cost of increased model complexity, requiring the estimation of more parameters and potentially being more prone to overfitting with smaller datasets compared to LDA. In this scenario, we only set parameters through ages and do not provide complex parameters that QDA needs. And that could be the reason why QDA performs worse than the LDA and all the models prior to it.
 
 (4) Decision trees
 ```{r}
@@ -490,9 +490,9 @@ tree_predictions <- predict(tree_model, data, type = "class")
 tree_accuracy <- sum(tree_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Decision Tree is ", tree_accuracy))
 ```
-Decision trees are versatile, non-parametric supervised learning models used for both classification and regression tasks. They hierarchically partition the feature space into segments based on the data's features, creating a tree-like structure where each internal node represents a feature test, each branch represents an outcome of that test, and each leaf node represents a class label or a predicted value. By sequentially splitting the data based on the most informative features, decision trees aim to maximize homogeneity within each resulting subset regarding the target variable. Their interpretability, ability to handle both numerical and categorical data, and resistance to outliers make them popular.
+Decision trees are versatile, non-parametric supervised learning models used for both classification and regression tasks. They hierarchically partition the feature space into segments based on the data's features, creating a tree-like structure where each internal node represents a feature test, each branch represents an outcome of that test, and each leaf node represents a class label or a predicted value. By sequentially splitting the data based on the most informative features, decision trees aim to maximize homogeneity within each resulting subset regarding the target variable. Their interpretability, ability to handle both numerical and categorical data and resistance to outliers make them popular.
 
-The weakness of decision trees is that they are prone to overfitting, especially with complex structures or noisy data, which can be mitigated through techniques like pruning or using ensemble methods like random forests or gradient boosting. In this scenario we do not require decision tree to predict complex structures, but only require it to predict simple regression on age, squared age and predict employment. So decision tree here could reach the same level of accuracy of LPM and other models.
+The weakness of decision trees is that they are prone to overfitting, especially with complex structures or noisy data, which can be mitigated through techniques like pruning or using ensemble methods like random forests or gradient boosting. In this scenario, we do not require a decision tree to predict complex structures but only require it to predict simple regression on age, squared age and predict employment. So decision tree here could reach the same level of accuracy as LPM and other models.
 
 (5) Random forests
 ```{r}
@@ -502,9 +502,9 @@ rf_predictions <- predict(rf_model, data)
 rf_accuracy <- sum(rf_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Random Forest (100 trees) is ", rf_accuracy))
 ```
-Random Forest is based on decision tree classifiers that builds multiple decision trees and merges their predictions to improve accuracy and reduce overfitting. It operates by creating a diverse set of decision trees through random sampling of both data points (bootstrap aggregating or "bagging") and features at each split. By aggregating predictions from these trees, typically through averaging for regression tasks or voting for classification, Random Forest reduces the variance and tends to yield more robust and accurate predictions than a single decision tree.
+Random Forest is based on decision tree classifiers that build multiple decision trees and merge their predictions to improve accuracy and reduce overfitting. It operates by creating a diverse set of decision trees through random sampling of both data points (bootstrap aggregating or "bagging") and features at each split. By aggregating predictions from these trees, typically through averaging for regression tasks or voting for classification, Random Forest reduces the variance and tends to yield more robust and accurate predictions than a single decision tree.
 
-The optimisation allows random forests to handle high-dimensional data, maintain good performance with default parameters, and provide insights into feature importance.In this scenario we do not provide a high-dimensional environment and cannot show the advantage that random forest improves at complex models. The accuracy on low dimensional age - employment prediction of random forest remains the same of decision trees.
+The optimisation allows random forests to handle high-dimensional data, maintain good performance with default parameters, and provide insights into feature importance. In this scenario, we do not provide a high-dimensional environment and cannot show the advantage that random forest improves at complex models. The accuracy of low dimensional age-employment prediction of random forest remains the same as of decision trees.
 
 (6) K-Nearest Neighbours
 ```{r}
@@ -512,15 +512,15 @@ The optimisation allows random forests to handle high-dimensional data, maintain
 modified_data <- data %>% 
   mutate(square_age = age*age)
 scaled_data <- scale(modified_data[, c("age", "square_age")])
-# Define the number of neighbors
+# Define the number of neighbours
 k <- 5
 knn_predictions <- knn(train = scaled_data, test = scaled_data, cl = as.factor(data$employed), k = k)
 knn_accuracy <- sum(knn_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for KNN (k=5, 5 nearest neighbours) is ", knn_accuracy))
 ```
-K-Nearest Neighbors (KNN) is a simple yet effective supervised learning algorithm used for both classification and regression tasks. It works by memorizing the entire training dataset and classifying new instances based on their similarity to the known data points. The algorithm determines the class of a new data point by looking at the majority class among its K nearest neighbors, where the "closeness" is typically computed using distance metrics like Euclidean or Manhattan distance in the feature space. 
+K-Nearest Neighbors (KNN) is a simple yet effective supervised learning algorithm used for both classification and regression tasks. It works by memorizing the entire training dataset and classifying new instances based on their similarity to the known data points. The algorithm determines the class of a new data point by looking at the majority class among its K nearest neighbours, where the "closeness" is typically computed using distance metrics like Euclidean or Manhattan distance in the feature space. 
 
-KNN’s simplicity and flexibility make it easy to implement, especially for small to medium-sized datasets, but it might be computationally expensive with larger datasets due to its need to store and compute distances for all training instances. Additionally, choosing the right value of K and appropriate distance metrics is crucial for optimal performance. In this small sized dataset scenario, KNN performs with similarly accuracy between different K values and remains the same of previous models like LPM because the data is sparse and doesn’t have a large number of dimensions.
+KNN’s simplicity and flexibility make it easy to implement, especially for small to medium-sized datasets, but it might be computationally expensive with larger datasets due to its need to store and compute distances for all training instances. Additionally, choosing the right value of K and appropriate distance metrics is crucial for optimal performance. In this small-sized dataset scenario, KNN performs with similar accuracy between different K values and remains the same as previous models like LPM because the data is sparse and doesn’t have a large number of dimensions.
 
 --END--
 
