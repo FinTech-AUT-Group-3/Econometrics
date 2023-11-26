@@ -10,7 +10,7 @@ author: |
   | Siyu Liu (CID: 02479121)
   | Zhiyu Chen (CID: 02517659)
   | Zhuofan Chen (CID: 02151338)
-date: "18-11-2023"
+date: "26-11-2023"
 output: pdf_document
 ---
 
@@ -129,7 +129,9 @@ In order to further prove the non-linearity, i.e. to prove the significance of t
 lpm_b_1 <- lm(employed ~ age, data = data)
 waldtest(lpm_b, lpm_b_1)
 ```
-Taking the main regression *lpm_b* as the fitted objective, a Wald test has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that the coefficients of these two models are the same can be rejected at a significance level of 1% with a F-statistics of 82.439. Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference in the regression. The importance of the squared term proves against the linearity of *age*.
+Taking the main regression *lpm_b* as the fitted objective, a Wald test has been performed on it against the hypothesis matrix of *lpm_b_1* regression coefficients. The null hypothesis that the coefficients of these two models are the same can be rejected at a significance level of 1% with a F-statistics of 82.439.
+
+Therefore, *squared age* is of statistically significant explanatory power over *employed* due to the fact that including it in the linear probability model will cause a material difference in the regression. The importance of the squared term proves against the linearity of *age*.
 
 ### Question b-iii)
 
@@ -152,7 +154,7 @@ ggplot(data, aes(x=age, fill= as.factor(employed))) +
   geom_bar(position = "dodge", stat = "count") +   
   labs(title = "Employment Status by Age", x = "Age",y = "Count")
 ```
-A sample *age* sequence from 18 to 63 was further created in order to detect the movement of *employed*. The *unemployed* variable stays within a consistent range across different age levels. On the other hand, the increasing trend of the employment probability inverted in the *age* range around 40 to 50 to decrease against age level.
+A sample *age* sequence from 18 to 63 was further created in order to detect the movement of *employed*. The absolute value of the *unemployed* variable stays within a consistent range across different age levels. On the other hand, the increasing trend of the employment probability inverted in the *age* range around 40 to 50 to decrease against age level.
 
 This is consistent with what happens in the real world after an economic recession. Younger individuals often have less work experience and may be employed in entry-level positions more susceptible to economic fluctuations. Individuals in the middle-age bracket may have accumulated a moderate level of experience, potentially making them more resilient to job losses during economic downturns. Job security for older individuals decreases post-recession, possibly due to industry restructuring, technological advancements, or age-related biases.
 
@@ -169,7 +171,7 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 print(paste("The age with the highest probability of being employed in 2009 is",
             round(- b / (2 * a), 1)))
 ```
-The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The U-shape of the curve again emphasized the non-linearity of the linear probability model as the increasing trend did not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of the quadratic relationship.
+The above curve suggests that the probability of being employed is lower at the extremes of *age*, both young and old, and higher in the middle range. The peak of the employment probability appears at the age of 43.5. The inverted parabola-shape of the curve again emphasizes the non-linearity of the linear probability model as the increasing trend does not continue after the age of 43.5 but turned to decrease instead, which is a characteristic of the negative quadratic relationship.
 
 \newpage
 
@@ -178,7 +180,6 @@ The above curve suggests that the probability of being employed is lower at the 
 *Repeat (b) using a probit regression*
 
 ```{r question c probit regression on age and squared age}
-# required linear probability model
 probit_c <- glm(employed ~ age + I(`age` ^ 2), 
                 family = binomial(link = "probit"), data)
 summary(probit_c)
@@ -193,13 +194,13 @@ summary(probit_c)
 coeftest(probit_c, vcov = vcovHC(probit_c), type = "HC1")
 ```
 
-The p-value of the coefficient of age is less than $$2 \times 10^{-16}$$, which is close enough to zero. At a significance level of 1%, the null hypothesis can be rejected. Thus, based on our probit regression, it can be concluded that *age* is a statistically significant determinant of *employed* in April 2009.
+The p-value of the coefficient of age is less than $$2.2 \times 10^{-16}$$, which is close enough to zero. At a significance level of 1%, the null hypothesis can be rejected. Thus, based on our Probit regression, it can be concluded that *age* is a statistically significant determinant of *employed* in April 2009.
 
 ```{r}
 margins(probit_c)
 ```
 
-The z-value of the *age* variable at 8.555 is further evidence to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. 
+The z-value of the *age* variable at 8.555 is a further evidence to reject the null hypothesis at a significance level of 1%, i.e. there is statistical evidence that the coefficient of *age* in the probability model is different from zero. 
 
 ### Question c-ii)
 
@@ -215,7 +216,7 @@ probit_c_1 <- glm(employed ~ age,
                   family = binomial(link = "probit"), data)
 waldtest(probit_c, probit_c_1)
 ```
-By looking at the Wald test between the LPM model and the Probit model, a p-value of less than 2.2*10^(-16) is observed, which is nearly zero. As the p-value is less than the significance level (even considering a 1% here), the null hypothesis could be rejected which states that the two models are the same. Therefore, the probit model is different from the LPM model, and the non-linearity of *age* on the probability of the probability being employed is reinforced.
+By looking at the Wald test between the LPM model and the Probit model, a p-value of less than 2.2*10^(-16) is observed, which is nearly zero. As the p-value is less than the significance level (even considering a 1% here), the null hypothesis could be rejected which states that the two models are the same. Therefore, the Probit model is different from the Probit model with only *age* as the variable, and the non-linearity of *age* on the probability of being employed is reinforced.
 
 
 ### Question c-iii)
@@ -230,8 +231,6 @@ probit_prediction <- predict(probit_c, new_data, type = "response")
 names(probit_prediction) <- c("Age 20", "Age 40", "Age 60")
 print(list(probit_prediction = probit_prediction))
 ```
-
-
 ```{r}
 a = probit_c$coefficients[3]
 b = probit_c$coefficients[2]
@@ -245,9 +244,9 @@ plot(age, f(age), type = 'l', ylab = "probability of being employed")
 print(paste("The age with the highest probability of being employed in 2009 is",
             round(- b / (2 * a), 1)))
 ```
-Based on the probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. This means, for example, a 20-year-old worker is predicted to be employed in April 2009 with a probability of 0.7327351, based on the historical data we have. 
+Based on the Probit model, a new data set is created given the specified values of the predictors *age* and *squared age*. The prediction list states the estimated probabilities of being employed at the age of 20, 40 and 60 are approximately 73.27%, 91.08% and 86.63% respectively. This means, for example, a 20-year-old worker is predicted to be employed in April 2009 with a probability of 0.7327351, based on the historical data we have. 
 
-The lowest predicted employment probability at the *age* of 20 might be due to the fact that people at a younger age of 20 have less experience and therefore face greater exposure to unemployment risk in an economic recession. And the old people may face some physical restrictions while working, which may also have a significant impact on their chances of getting employed. Middle-aged people are the main workforce in society with their better physical and experiential conditions. Such a trend can also be shown in our plot of the probability of being employed under the probit model.
+The lowest predicted employment probability at the *age* of 20 might be due to the fact that people at a younger age of 20 have less experience and therefore face greater exposure to unemployment risk in an economic recession. And the old people may face some physical restrictions while working, which may also have a significant impact on their chances of getting employed. Middle-aged people are the main workforce in society with their better physical and experiential conditions. Such a trend can also be shown in our plot of the probability of being employed under the Probit model.
 
 \newpage
 
@@ -272,13 +271,13 @@ coeftest(logit_d, vcov = vcovHC(logit_d), type = "HC1")
 ```
 The logistic regression is a statistical method used for modelling the probability that a dependent variable is categorical with two levels at 0 and 1, in this case, the *employed* binary variable. The sigmoid function is used to model the relationship of *age* and *squared age* against the employment probability.
 
-Based on the above result, the *age* variable is a statistically significant determinant of the April 2009 Employment probability rate with over 99% confidence level as the model p-value is less than 0.01. One-unit change in *age* shall lead to 0.2187 units of change in the log-odds of the corresponding dependent variable *employed*.
+Based on the above result, the *age* variable is a statistically significant determinant of the April 2009 Employment probability rate with over 99% confidence level as the model p-value is less than 0.01.
 
 ```{r}
 margins(logit_d)
 ```
 
-The z-value of the *age* variable at 8.7968 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value is less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supporting that *age* is a statically significant predictor of *employed*.
+The z-value of the *age* variable at 8.7968 is significant enough to reject the null hypothesis at a significance level of 1%, i.e. there is no statistical evidence that the coefficient of *age* in the probability model is different from zero. The p-value is less than $$2 \times 10^{-16}$$, which is way smaller than the significance level, further supporting that *age* is a statically significant predictor of *employed*. One-unit change in *age* shall lead to 0.001215823 units of change in the dependent variable *employed*.
 
 ### Question d-ii)
 
@@ -320,7 +319,8 @@ f = function(x) {
 age <- seq(15, 75)
 plot(age, f(age), type = 'l', ylab = "probability of being employed")
 
-print(paste("The age with the highest probability of being employed in 2009 is", round(- b / (2 * a), 1)))
+print(paste("The age with the highest probability of being employed in 2009 is", 
+            round(- b / (2 * a), 1)))
 ```
 
 Again the sample *age* sequence from 18 to 63 was created to plot the employment probability curve with a similar depicted curve tendency and a similar *age* peak at 43.2 years old. Beyond this peak point, the rising employment probability starts to decline, illustrating a characteristic quadratic relationship. The value of *employed* diminishes at both tails to underscore the non-linear nature of the logistic regression model.
@@ -341,12 +341,13 @@ model_names <- c("LPM", "Probit", "Logit")
 model_df <- cbind(Model = model_names, model_df)
 model_df
 ```
-The probabilities of being employed are 0.089%, 0.11%, and 0.12% observed from the Linear Probability Model (LPM),  Probit, and Logit models, respectively. Thus, there is not much difference between the answers to questions (b) to (d).
+The probabilities of being employed will increase with *age* by 0.089%, 0.11%, and 0.12%, observed from the Linear Probability Model (LPM),  Probit, and Logit models, respectively. In addition, the margins and the age that is predicted to have a highest probability of being unemployed are all similar among the three models. Thus, there is not a significant difference between the answers to questions (b) to (d).
+
 However, these three models are very different in definition. LPM is a regression model used for binary outcomes, where the dependent variable is binary (usually 0 or 1). Coefficients in LPM can be interpreted as the change in the probability of the event for a one-unit change in the corresponding independent variable. However, there is a limitation of LPM - the predicted probabilities can fall outside the usual probability [0, 1] range, and it may suffer from heteroscedasticity.
 
-Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
+Probit is a type of regression model used for binary outcomes, similar to the LPM. However, it uses the cumulative distribution function of the standard normal distribution (Probit function) to model the relationship. Unlike LPM, coefficients in the probit model represent the change in the z-score of the latent variable for a one-unit change in the corresponding independent variable.
 
-Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modelled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by an exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
+Consider a Logit model where *y* is the dependent variable and the *x*s are the independent variables, the log odds of the probabilities (log(P(x)/1-P(x)) is modeled as a linear combination of the predictor variables. Different from LPM, increasing the i-th *x* by one unit changes the log odds by units of the amount of the corresponding coefficient *beta-i*. Equivalently, the odds change in percentage by an exponential of *beta-i*. Both Probit and Logic models will have the predicted probabilities lying in the usual probability range of [0,1]. 
 
 
 Regarding the limitations of the Probit and Logit models, they are both logistic regression models and have a non-linear relationship between the independent variables and the probability of the event occurring. While this is often more realistic than the linear probability model, it can make interpretation more complex.
@@ -376,9 +377,9 @@ summary(lpm_f)
 
 The comparison between the initial linear regression model and the adjusted model reveals a small difference in the coefficients for *age* and *squared age*. In the initial model *lpm_b*, *age* and *squared age* exhibited significant effects in different directions on employment probability. In the adjusted model *lpm_f*, while the coefficients for *age* and *squared age* remain significant at a significance level of 1% with t-values at 8.087 and -7.954 respectively, the coefficient values have changed slightly. This difference suggests that the additional variables have impacted the interpretation of the *age*-related effects on *employed*. Namely, the introduction of new variables such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - points out potential omitted variable bias in the initial model.
 
-Additionally, the statistical significance of certain new variables including educational factors, regional factors and weekly earnings in the adjusted model highlights the importance of considering a broader set of factors. Moreover, the higher adjusted R-squared of the adjusted model indicates an increase in explanatory power which in turn suggests the added co-variates contribute to a better understanding of the variability in employment status.
+Additionally, the statistical significance of certain new variables including educational factors, regional factors and weekly earnings in the adjusted model highlights the importance of considering a broader set of factors. Moreover, the higher adjusted R-squared of the adjusted model indicates an increase in explanatory power which in turn suggests the added covariates contribute to a better understanding of the variability in employment status.
 
-To conclude, while these results might suggest the presence of some omitted variable bias in the initial model, the small coefficient difference for *age* and *squared age* between the two models and the fact they are still extremely significant in the adjusted model leads us to think there is not an impactful omitted variable bias. Nevertheless, it is important to point out that the adjusted model better explains the changes due to the added covariates
+To conclude, while these results might suggest the presence of some omitted variable bias in the initial model, the small coefficient difference for *age* and *squared age* between the two models and the fact they are still extremely significant in the adjusted model leads us to think there is not an impactful omitted variable bias. Nevertheless, it is important to point out that the adjusted model better explains the changes due to the added covariates.
 
 ### Question f-ii)
 
@@ -404,7 +405,8 @@ In this question, we examine the in-sample accuracy using the three models estab
 
 ```{r}
 # Predictions for models b, c, d (In-sample)
-predictions_b_raw <- predict(lpm_b, data, type = "response")  # For linear probability model
+predictions_b_raw <- predict(lpm_b, 
+                             data, type = "response")  # For linear probability model
 predictions_c_raw <- predict(probit_c, data, type = "response")  # For probit model
 predictions_d_raw <- predict(logit_d, data, type = "response")  # For logit model
 
@@ -421,28 +423,42 @@ lpm_b_accuracy <- sum(predictions_b == actual_employed) / length(actual_employed
 lpm_c_accuracy <- sum(predictions_c == actual_employed) / length(actual_employed)
 lpm_d_accuracy <- sum(predictions_d == actual_employed) / length(actual_employed)
 
-print(paste("The proportion of correctly assigned classes of model b is ", lpm_b_accuracy*100, "%"))
-print(paste("The proportion of correctly assigned classes of model c is ", lpm_c_accuracy*100, "%"))
-print(paste("The proportion of correctly assigned classes of model d is ", lpm_d_accuracy*100, "%"))
+print(paste("The proportion of correctly assigned classes of model b is ", 
+            lpm_b_accuracy*100, "%"))
+print(paste("The proportion of correctly assigned classes of model c is ", 
+            lpm_c_accuracy*100, "%"))
+print(paste("The proportion of correctly assigned classes of model d is ", 
+            lpm_d_accuracy*100, "%"))
 
 ```
 
 From the in-sample test, the proportion of correctly assigned classes for models b-d is 87.513% for all models. Although there are differences in raw in-sample predictions among these three models, the binary classification of the three models' prediction results are actually identical.
 
 ```{r}
-if(identical(predictions_b_raw, predictions_c_raw) && identical(predictions_b_raw, predictions_d_raw))  {
+if(identical(predictions_b_raw, predictions_c_raw) && 
+   identical(predictions_b_raw, predictions_d_raw))  {
   print("The in-sample prediction of the three models' predictions are identical.")
 } else {
   print("The in-sample prediction of the three models' predictions are not identical.")
 }
 
-if(identical(predictions_b, predictions_c) && identical(predictions_b, predictions_d))  {
+if(identical(predictions_b, predictions_c) && 
+   identical(predictions_b, predictions_d))  {
   print("The binary classification of the three models' predictions are identical.")
 } else {
   print("The binary classification of the three models' predictions are not identical.")
 }
 ```
 This result implies that although the three models have differences in regression principles, they are consistent in showing the strong correlation between the prediction target employment status and predictors *age* and *squared age*. On the other hand, it shows that predicting employment status through *age* and *squared age* is not comprehensive enough as there is over 12% error in all three models. The introduction of other predictors such as regional factors, weekly earnings and *educ_lths* - the highest level of education is less than a high school graduate - are also necessary for comparing.
+
+```{r}
+confusion_matrix_LPM <- table(Actual = data$employed, Predicted = predictions_b) 
+confusion_matrix_logit  <- table(Actual = data$employed, Predicted = predictions_c)
+confusion_matrix_probit <- table(Actual = data$employed, Predicted = predictions_d)
+print(confusion_matrix_LPM)
+print(confusion_matrix_logit) 
+print(confusion_matrix_probit)
+```
 
 \newpage
 
@@ -456,8 +472,6 @@ nb_accuracy <- sum(nb_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for Naive Bayes Classifier is ", nb_accuracy))
 ```
 The Naïve Bayes classifier operates on the principle of Bayes' theorem with a simplifying assumption that features are independent. Despite this naive assumption, it effectively computes the probability of a data point belonging to a certain class by evaluating the conditional probabilities of each feature given the class label. Naive Bayes excels in processing large datasets due to its computational efficiency and general robustness. It has been proven remarkably effective even when the independence assumption doesn't hold perfectly in real-world datasets.
-
-The accuracy of the Naïve Bayes classifier in this scenario is equal to that of LPM, probit, and logit models. The reason could be that although we have proven there is non-linearity between age and employment, the level of the non-linearity is not fairly strong. Under those circumstances, the Naïve Bayes classifier could achieve comparable accuracy to linear models like LPM, probit, or logit.
 
 (2) Linear Discriminant Analysis
 ```{r}
@@ -514,7 +528,8 @@ modified_data <- data %>%
 scaled_data <- scale(modified_data[, c("age", "square_age")])
 # Define the number of neighbours
 k <- 5
-knn_predictions <- knn(train = scaled_data, test = scaled_data, cl = as.factor(data$employed), k = k)
+knn_predictions <- knn(train = scaled_data, test = scaled_data, 
+                       cl = as.factor(data$employed), k = k)
 knn_accuracy <- sum(knn_predictions == actual_employed) / length(actual_employed)
 print(paste("In-sample accuracy for KNN (k=5, 5 nearest neighbours) is ", knn_accuracy))
 ```
